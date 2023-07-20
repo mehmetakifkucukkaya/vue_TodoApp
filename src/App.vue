@@ -18,6 +18,11 @@ export default {
     Tasks,
     AddTaskForm,
   },
+  props: {
+    APIKey: "65943515998380b98149bdc69a569a8b",
+    APIToken:
+      "ATTAb2ff5ec830d00d723541530a6f6a158a9050c0c9832caaa0cab3988073e6b527593E1979",
+  },
   data() {
     return {
       tasks: [],
@@ -41,24 +46,28 @@ export default {
         text: "İngilizce Çalış",
         day: "21 Temmuz ",
         priority: "Düşük",
+        category: "Eğitim",
       },
       {
         id: 2,
         text: "Algoritma Çalış",
         day: "22 Temmuz ",
         priority: "Düşük",
+        category: "Yazılım",
       },
       {
         id: 3,
         text: "Python Çalış",
         day: "23 Temmuz ",
         priority: "Orta",
+        category: "Yazılım",
       },
       {
         id: 4,
         text: "Kitap Oku",
         day: "24 Temmuz ",
         priority: "Yüksek",
+        category: "Genel",
       },
     ];
   },

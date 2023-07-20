@@ -8,6 +8,9 @@
       {{ task.day }} -
       <span :style="getStyle(task.priority)">{{ task.priority }}</span>
     </p>
+    <p>
+      <b>{{ task.category }}</b>
+    </p>
   </div>
 </template>
 
