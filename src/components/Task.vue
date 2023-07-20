@@ -1,10 +1,13 @@
 <template>
   <div class="task">
     <h3>
-      {{ task.description }}
+      {{ task.text }}
       <i @click="onDelete(task.id)" class="fas fa-times"></i>
     </h3>
-    <p>{{ task.day }}</p>
+    <p>
+      {{ task.day }} -
+      <span :style="getStyle(task.priority)">{{ task.priority }}</span>
+    </p>
   </div>
 </template>
 
@@ -19,10 +22,20 @@ export default {
     onDelete(id) {
       this.$emit("deleteTask", id);
     },
+    getStyle(priority) {
+      // Önem derecesine göre renk alıyor
+      if (priority === "Düşük") {
+        return { color: "blue" };
+      } else if (priority === "Orta") {
+        return { color: "orange" };
+      } else if (priority === "Yüksek") {
+        return { color: "#EB0B0B" };
+      } else {
+        return { color: "black" };
+      }
+    },
   },
 };
-
-
 </script>
 
 <style scope>
@@ -31,7 +44,7 @@ export default {
 }
 
 .task {
-  background: #c3edc0;
+  background: #cfe69e;
   margin: 5px;
   padding: 10px 20px;
   cursor: pointer;
@@ -42,5 +55,4 @@ export default {
   align-items: center;
   justify-content: space-between;
 }
-
 </style>

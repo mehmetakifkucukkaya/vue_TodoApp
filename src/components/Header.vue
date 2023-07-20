@@ -1,13 +1,11 @@
 <template>
   <header>
     <h1>{{ title }}</h1>
-    <AddTaskButton text="Görev Ekle" />
   </header>
 </template>
 
 
 <script>
-import AddTaskButton from "./AddTaskButton.vue";
 
 export default {
   name: "Header",
@@ -15,7 +13,6 @@ export default {
     title: String,
   },
   components: {
-    AddTaskButton,
   },
 };
 </script>

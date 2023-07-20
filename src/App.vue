@@ -38,23 +38,27 @@ export default {
     this.tasks = [
       {
         id: 1,
-        description: "İngilizce Çalış",
+        text: "İngilizce Çalış",
         day: "21 Temmuz ",
+        priority: "Düşük",
       },
       {
         id: 2,
-        description: "Algoritma Çalış",
+        text: "Algoritma Çalış",
         day: "22 Temmuz ",
+        priority: "Düşük",
       },
       {
         id: 3,
-        description: "Python Çalış",
+        text: "Python Çalış",
         day: "23 Temmuz ",
+        priority: "Orta",
       },
       {
         id: 4,
-        description: "Kitap Oku",
+        text: "Kitap Oku",
         day: "24 Temmuz ",
+        priority: "Yüksek",
       },
     ];
   },
