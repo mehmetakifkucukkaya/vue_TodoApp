@@ -10,6 +10,7 @@
 import Header from "./components/Header.vue";
 import Tasks from "./components/Tasks.vue";
 import AddTaskForm from "./components/AddTaskForm.vue";
+import axios from "axios";
 
 export default {
   name: "App",
@@ -18,27 +19,47 @@ export default {
     Tasks,
     AddTaskForm,
   },
-  props: {
-    APIKey: "65943515998380b98149bdc69a569a8b",
-    APIToken:
-      "ATTAb2ff5ec830d00d723541530a6f6a158a9050c0c9832caaa0cab3988073e6b527593E1979",
-  },
+  props: {},
   data() {
     return {
       tasks: [],
+      APIKey: "65943515998380b98149bdc69a569a8b",
+      APIToken:
+        "ATTAb2ff5ec830d00d723541530a6f6a158a9050c0c9832caaa0cab3988073e6b527593E1979",
+        idBoard: "64b97f70d4005b477e6fac62",
     };
   },
 
   methods: {
     addTask(task) {
+      
       this.tasks = [...this.tasks, task];
+
+      const requestBody = {
+        name: task.text,
+        idBoard: this.idBoard,
+        key: this.APIKey,
+        token: this.APIToken,
+      };
+
+      //Trelloya Yeni Liste Ekleme
+      axios
+        .post("https://api.trello.com/1/lists", requestBody)
+        .then((response) => {
+          console.log("List eklendi:", response.data);
+          
+        })
+        .catch((error) => {
+          console.error("Liste Eklenemedi!:", error);
+        
+        });
     },
     deleteTask(id) {
       //Filtreleme işlemi yaparak görevleri siliyoruz
       this.tasks = this.tasks.filter((task) => task.id !== id);
     },
   },
-
+  // Geçici data
   created() {
     this.tasks = [
       {
