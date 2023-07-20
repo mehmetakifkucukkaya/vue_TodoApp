@@ -1,20 +1,67 @@
 <template>
   <div class="container">
     <Header title="Todo App" />
-
+    <AddTaskForm @add-task="addTask" />
+    <Tasks @deleteTask="deleteTask($event)" :tasks="tasks" />
   </div>
 </template>
 
 <script>
 import Header from "./components/Header.vue";
+import Tasks from "./components/Tasks.vue";
+import AddTaskForm from "./components/AddTaskForm.vue";
 
 export default {
   name: "App",
   components: {
     Header,
+    Tasks,
+    AddTaskForm,
+  },
+  data() {
+    return {
+      tasks: [],
+    };
+  },
+
+  methods: {
+    addTask(task) {
+      this.tasks = [...this.tasks, task];
+    },
+    deleteTask(id) {
+      //Filtreleme işlemi yaparak görevleri siliyoruz
+      this.tasks = this.tasks.filter((task) => task.id !== id);
+    },
+  },
+
+  created() {
+    this.tasks = [
+      {
+        id: 1,
+        description: "İngilizce Çalış",
+        day: "21 Temmuz ",
+      },
+      {
+        id: 2,
+        description: "Algoritma Çalış",
+        day: "22 Temmuz ",
+      },
+      {
+        id: 3,
+        description: "Python Çalış",
+        day: "23 Temmuz ",
+      },
+      {
+        id: 4,
+        description: "Kitap Oku",
+        day: "24 Temmuz ",
+      },
+    ];
   },
 };
 </script>
+
+
 
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap");
@@ -41,7 +88,7 @@ body {
 
 .btn {
   display: inline-block;
-  background: #49B16A;
+  background: #49b16a;
   color: #fff;
   border: none;
   padding: 10px 20px;
