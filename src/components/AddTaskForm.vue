@@ -10,13 +10,22 @@
       <input type="text" v-model="day" name="day" placeholder="Tarih Girin" />
     </div>
 
-    <div>Önem Derecesi: {{ priority }}</div>
-
+    <div>Önem Derecesi</div>
     <select v-model="priority">
-      <option disabled >Önem Derecesini Seçiniz</option>
+      <option disabled>Önem Derecesini Seçiniz</option>
       <option>Yüksek</option>
       <option>Orta</option>
       <option>Düşük</option>
+    </select>
+
+    <div>Kategori</div>
+    <select v-model="category">
+      <option disabled>Kategori Seçiniz</option>
+      <option>Genel</option>
+      <option>Spor</option>
+      <option>Yazılm</option>
+      <option>Eğitim</option>
+      <option>Eğlence</option>
     </select>
 
     <input type="submit" value="Görev Ekle" class="btn btn-block" />
@@ -31,7 +40,8 @@ export default {
     return {
       text: "",
       day: "",
-      priority: ""
+      priority: "",
+      category: "",
     };
   },
   methods: {
@@ -48,6 +58,7 @@ export default {
         text: this.text,
         day: this.day,
         priority: this.priority,
+        category: this.category,
       };
 
       this.$emit("add-task", newTask);
@@ -56,6 +67,7 @@ export default {
       this.text = "";
       this.day = "";
       this.priority = "";
+      this.category = "";
     },
   },
 };
