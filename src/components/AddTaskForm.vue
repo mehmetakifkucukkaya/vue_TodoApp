@@ -7,11 +7,11 @@
 
     <div class="form-control">
       <label>Tarih</label>
-      <input type="text" v-model="day" name="day" placeholder="Tarih Girin" />
+      <input type="date" v-model="day" name="day" placeholder="Tarih Girin" />
     </div>
 
     <div>Önem Derecesi</div>
-    <select v-model="priority">
+    <select class="opitonSelect" v-model="priority">
       <option disabled>Önem Derecesini Seçiniz</option>
       <option>Yüksek</option>
       <option>Orta</option>
@@ -19,7 +19,7 @@
     </select>
 
     <div>Kategori</div>
-    <select v-model="category">
+    <select class="opitonSelect" v-model="category">
       <option disabled>Kategori Seçiniz</option>
       <option>Genel</option>
       <option>Spor</option>
@@ -94,5 +94,9 @@ export default {
   margin: 5px;
   padding: 3px 7px;
   font-size: 17px;
+}
+
+.opitonSelect {
+  width: 250px;
 }
 </style>

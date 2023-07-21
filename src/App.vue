@@ -19,7 +19,6 @@ export default {
     Tasks,
     AddTaskForm,
   },
-  props: {},
   data() {
     return {
       tasks: [],
@@ -36,12 +35,12 @@ export default {
       this.tasks = [...this.tasks, task]; // Arayüzde ekleme yapar
 
       // Trelloya task (Card) eklemesi yapar
-
       const requestBody = {
         name: task.text,
         idList: this.idList, // Doğru liste ID'sini buraya atayın
         key: this.APIKey,
         token: this.APIToken,
+        due: task.day,
       };
 
       axios
@@ -52,6 +51,7 @@ export default {
         .then((response) => {
           console.log("Kart eklendi:", response.data);
           (task.id = response.data["id"]), console.log(task.id);
+          console.log("İD:" , response.data["id"])
         })
         .catch((error) => {
           console.error("Kart eklenemedi!:", error);
@@ -74,42 +74,37 @@ export default {
           console.error("Kart silinemedi!:", error);
         });
     },
+
+    //Cardları getiren metot.
+    getCards() {
+      axios
+        .get(
+          `https://api.trello.com/1/lists/${this.idList}/cards?key=${this.APIKey}&token=${this.APIToken}`
+        )
+        .then((response) => {
+          this.tasks = response.data.map((card) => {
+            return {
+              id: card.id,
+              text: card.name,
+              day: card.due,
+              priority: card.labels.length > 0 ? card.labels[0].name : "",
+              category: card.labels.length > 1 ? card.labels[1].name : "",
+            };
+          });
+          console.log("Tüm kartlar alındı:", this.tasks);
+        })
+        .catch((error) => {
+          console.error("Kartlar alınamadı!:", error);
+        });
+    },
   },
 
-  // Geçici data
   created() {
-    this.tasks = [
-      {
-        id: 1,
-        text: "İngilizce Çalış",
-        day: "21 Temmuz ",
-        priority: "Düşük",
-        category: "Eğitim",
-      },
-      {
-        id: 2,
-        text: "Algoritma Çalış",
-        day: "22 Temmuz ",
-        priority: "Düşük",
-        category: "Yazılım",
-      },
-      {
-        id: 3,
-        text: "Python Çalış",
-        day: "23 Temmuz ",
-        priority: "Orta",
-        category: "Yazılım",
-      },
-      {
-        id: 4,
-        text: "Kitap Oku",
-        day: "24 Temmuz ",
-        priority: "Yüksek",
-        category: "Genel",
-      },
-    ];
+    this.getCards(); 
   },
+
 };
+
 </script>
 
 
