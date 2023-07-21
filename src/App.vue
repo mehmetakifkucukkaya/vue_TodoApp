@@ -59,11 +59,23 @@ export default {
     },
 
     deleteTask(id) {
-      //Filtreleme işlemi yaparak görevleri siliyoruz
+      //Filtreleme işlemi yaparak görevleri siliyoruz (Arayüzden)
       this.tasks = this.tasks.filter((task) => task.id !== id);
-      console.log("Silindi: ", id); // Teyit için yazıldı. Silinecek
+
+      // Trellodan siliyoruz.
+      axios
+        .delete(
+          `https://api.trello.com/1/cards/${id}?key=${this.APIKey}&token=${this.APIToken}`
+        )
+        .then((response) => {
+          console.log("Kart silindi:", response.data);
+        })
+        .catch((error) => {
+          console.error("Kart silinemedi!:", error);
+        });
     },
   },
+
   // Geçici data
   created() {
     this.tasks = [
