@@ -23,40 +23,45 @@ export default {
   data() {
     return {
       tasks: [],
-      APIKey: "65943515998380b98149bdc69a569a8b",
+      APIKey: "65943515998380b98149bdc69a569a8b", //Trello API Key buraya girilmeli
       APIToken:
-        "ATTAb2ff5ec830d00d723541530a6f6a158a9050c0c9832caaa0cab3988073e6b527593E1979",
-        idBoard: "64b97f70d4005b477e6fac62",
+        "ATTAb2ff5ec830d00d723541530a6f6a158a9050c0c9832caaa0cab3988073e6b527593E1979", //Trello token buraya girilmeli
+      idBoard: "64b97f70d4005b477e6fac62", //Trello Board ID'si buraya girilmeli
+      idList: "64ba704b58ec7e4fd9025460", // List 1
     };
   },
 
   methods: {
     addTask(task) {
-      
-      this.tasks = [...this.tasks, task];
+      this.tasks = [...this.tasks, task]; // Arayüzde ekleme yapar
+
+      // Trelloya task (Card) eklemesi yapar
 
       const requestBody = {
         name: task.text,
-        idBoard: this.idBoard,
+        idList: this.idList, // Doğru liste ID'sini buraya atayın
         key: this.APIKey,
         token: this.APIToken,
       };
 
-      //Trelloya Yeni Liste Ekleme
       axios
-        .post("https://api.trello.com/1/lists", requestBody)
+        .post(
+          `https://api.trello.com/1/cards?idList=${this.idList}&key=${this.APIKey}&token=${this.APIToken}`,
+          requestBody
+        )
         .then((response) => {
-          console.log("List eklendi:", response.data);
-          
+          console.log("Kart eklendi:", response.data);
+          (task.id = response.data["id"]), console.log(task.id);
         })
         .catch((error) => {
-          console.error("Liste Eklenemedi!:", error);
-        
+          console.error("Kart eklenemedi!:", error);
         });
     },
+
     deleteTask(id) {
       //Filtreleme işlemi yaparak görevleri siliyoruz
       this.tasks = this.tasks.filter((task) => task.id !== id);
+      console.log("Silindi: ", id); // Teyit için yazıldı. Silinecek
     },
   },
   // Geçici data
@@ -147,3 +152,7 @@ body {
   width: 100%;
 }
 </style>
+
+
+
+ 
