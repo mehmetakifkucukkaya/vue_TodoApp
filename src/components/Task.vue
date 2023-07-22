@@ -1,15 +1,21 @@
 <template>
   <div class="task">
     <h3>
-      {{ task.text }}
-      <i @click="onDelete(task.id)" class="fas fa-times"></i>
+      <span class="task-text">{{ task.text }}</span>
+      <span class="icons">
+        <i @click="onDelete(task.id)" class="fas fa-trash-alt"></i>
+        <i @click="onUpdate(task.id)" class="fas fa-edit"></i>
+      </span>
     </h3>
     <p>
-      <b>Date:</b> {{ formatDate(task.day) }}
-      <b> <span :style="getStyle(task.priority)">{{ task.priority }}</span> </b> 
+      <b></b> <b>{{ formatDate(task.day) }}</b>
+      <b>&nbsp;&nbsp;&nbsp;&nbsp;</b>
+      <b
+        ><span :style="getStyle(task.priority)">{{ task.priority }}</span></b
+      >
     </p>
     <p>
-      <b>Category:</b> {{ task.category }}
+      <b style="color: grey">{{ task.category }}</b>
     </p>
   </div>
 </template>
@@ -25,19 +31,23 @@ export default {
     onDelete(id) {
       this.$emit("deleteTask", id);
     },
-        
+
+    onUpdate(id) {
+      this.$emit("updateTask", id);
+    },
     formatDate(date) {
       if (date) {
         const formattedDate = new Date(date);
         const day = formattedDate.getDate();
         const month = formattedDate.getMonth() + 1;
         const year = formattedDate.getFullYear();
-        return `${day < 10 ? "0" : ""}${day}/${month < 10 ? "0" : ""}${month}/${year}`;
+        return `${day < 10 ? "0" : ""}${day}/${
+          month < 10 ? "0" : ""
+        }${month}/${year}`;
       }
       return "";
     },
 
-    
     getStyle(priority) {
       // Önem derecesine göre renk alıyor
       if (priority === "Düşük") {
@@ -50,12 +60,10 @@ export default {
         return { color: "black" };
       }
     },
-
   },
 };
-
-
 </script>
+
 
 <style scope>
 .fas {
@@ -73,5 +81,22 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.task-text {
+  flex: 1; /* Yeni eklenen kısım */
+}
+
+.icons {
+  display: flex; /* Yeni eklenen kısım */
+}
+
+.task i {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.task i.fa-edit {
+  color: blue;
 }
 </style>
