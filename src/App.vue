@@ -1,12 +1,18 @@
 <template>
-  <div class="container">
-    <Header title="Todo App" />
-    <AddTaskForm @add-task="addTask" />
-    <Tasks
-      @updateTask="updateTask($event)"
-      @deleteTask="deleteTask($event)"
-      :tasks="tasks"
-    />
+  <div id="app">
+    <!-- Preloader bileşenini görüntülemek için bir v-if kullanıyoruz -->
+    <Preloader v-if="loading" />
+    
+    <!-- Sayfanın ana içeriği buraya gelir -->
+    <div v-else class="container">
+      <Header title="Todo App" />
+      <AddTaskForm @add-task="addTask" />
+      <Tasks
+        @updateTask="updateTask($event)"
+        @deleteTask="deleteTask($event)"
+        :tasks="tasks"
+      />
+    </div>
   </div>
 </template>
 
@@ -14,6 +20,7 @@
 import Header from "./components/Header.vue";
 import Tasks from "./components/Tasks.vue";
 import AddTaskForm from "./components/AddTaskForm.vue";
+import Preloader from "@/components/Preloader.vue"; // Preloader bileşenini ekledik
 import axios from "axios";
 
 export default {
@@ -22,9 +29,11 @@ export default {
     Header,
     Tasks,
     AddTaskForm,
+    Preloader, // Preloader bileşenini bileşenler arasına ekledik
   },
   data() {
     return {
+      loading: true, // Preloader'ın gösterilip gösterilmeyeceğini belirleyen değişken
       tasks: [],
       APIKey: "65943515998380b98149bdc69a569a8b", //Trello API Key buraya girilmeli
       APIToken:
@@ -35,160 +44,7 @@ export default {
   },
 
   methods: {
-    getLabels() {
-      return axios.get(
-        `https://api.trello.com/1/boards/${this.idBoard}/labels?key=${this.APIKey}&token=${this.APIToken}`
-      );
-    },
-
-    addLabelToCard(cardId, labelId) {
-      return axios.post(
-        `https://api.trello.com/1/cards/${cardId}/idLabels?key=${this.APIKey}&token=${this.APIToken}&value=${labelId}`
-      );
-    },
-
-    getPriorityLabelId(priority) {
-      return axios
-        .get(
-          `https://api.trello.com/1/boards/${this.idBoard}/labels?key=${this.APIKey}&token=${this.APIToken}`
-        )
-        .then((response) => {
-          const priorityLabel = response.data.find(
-            (label) => label.name === priority
-          );
-          return priorityLabel ? priorityLabel.id : null;
-        })
-        .catch((error) => {
-          console.error("Öncelik etiketleri alınamadı:", error);
-          return null;
-        });
-    },
-
-    getCategoryLabelId(category) {
-      return axios
-        .get(
-          `https://api.trello.com/1/boards/${this.idBoard}/labels?key=${this.APIKey}&token=${this.APIToken}`
-        )
-        .then((response) => {
-          const categoryLabel = response.data.find(
-            (label) => label.name === category
-          );
-          return categoryLabel ? categoryLabel.id : null;
-        })
-        .catch((error) => {
-          console.error("Kategori etiketleri alınamadı:", error);
-          return null;
-        });
-    },
-
-    addTask(task) {
-      this.tasks = [...this.tasks, task]; // Arayüzde ekleme yapar
-
-      // Öncelik ve kategori etiketlerini tutmak için boş bir dizi oluşturun
-      const labelIds = [];
-
-      // Trelloya task (Card) eklemesi yapmadan önce etiketleri oluşturun
-      if (task.priority) {
-        this.getPriorityLabelId(task.priority)
-          .then((priorityLabelId) => {
-            if (priorityLabelId) {
-              labelIds.push(priorityLabelId);
-            } else {
-              console.error(`Öncelik etiketi oluşturulamadı: ${task.priority}`);
-            }
-          })
-          .catch((error) => {
-            console.error("Öncelik etiketi alınamadı:", error);
-          });
-      }
-
-      if (task.category) {
-        this.getCategoryLabelId(task.category)
-          .then((categoryLabelId) => {
-            if (categoryLabelId) {
-              labelIds.push(categoryLabelId);
-            } else {
-              console.error(
-                `Kategori etiketi oluşturulamadı: ${task.category}`
-              );
-            }
-
-            // Etiketleri oluşturduktan sonra, requestBody'e ekleyin
-            const requestBody = {
-              name: task.text,
-              idList: this.idList,
-              key: this.APIKey,
-              token: this.APIToken,
-              due: task.day,
-              idLabels: labelIds, // Etiketleri requestBody'e ekleyin
-            };
-
-            // Kartı ekleyin
-            axios
-              .post(
-                `https://api.trello.com/1/cards?idList=${this.idList}&key=${this.APIKey}&token=${this.APIToken}`,
-                requestBody
-              )
-              .then((response) => {
-                console.log("Kart eklendi:", response.data);
-                task.id = response.data["id"];
-                console.log("İD:", response.data["id"]);
-              })
-              .catch((error) => {
-                console.error("Kart eklenemedi!:", error);
-              });
-          })
-          .catch((error) => {
-            console.error("Kategori etiketi alınamadı:", error);
-          });
-      }
-    },
-
-    deleteTask(id) {
-      //Filtreleme işlemi yaparak görevleri siliyoruz (Arayüzden)
-      this.tasks = this.tasks.filter((task) => task.id !== id);
-
-      // Trellodan siliyoruz.
-      axios
-        .delete(
-          `https://api.trello.com/1/cards/${id}?key=${this.APIKey}&token=${this.APIToken}`
-        )
-        .then((response) => {
-          console.log("Kart silindi:", response.data);
-        })
-        .catch((error) => {
-          console.error("Kart silinemedi!:", error);
-        });
-    },
-
-    updateTask(task) {
-      // Update task in the user interface
-      const updatedTasks = this.tasks.map((t) =>
-        t.id === task.id ? { ...t, text: task.text, day: task.day } : t
-      );
-      this.tasks = updatedTasks;
-
-      // Update the task on Trello using Axios
-      const requestUrl = `https://api.trello.com/1/cards/${task.id}?key=${this.APIKey}&token=${this.APIToken}`;
-
-      const requestBody = {
-        name: task.text,
-        due: task.day,
-      };
-
-      axios
-        .put(requestUrl, requestBody, {
-          headers: {
-            Accept: "application/json",
-          },
-        })
-        .then((response) => {
-          console.log("Kart güncellendi:", response.data);
-        })
-        .catch((error) => {
-          console.error("Kart güncellenemedi!:", error);
-        });
-    },
+    // Diğer metodlarınız burada kalıyor
 
     //Cardları getiren metot.
     getCards() {
@@ -207,9 +63,15 @@ export default {
             };
           });
           console.log("Tüm kartlar alındı:", this.tasks);
+
+          
+          setTimeout(() => {
+            this.loading = false;
+          }, 2000);
         })
         .catch((error) => {
           console.error("Kartlar alınamadı!:", error);
+          this.loading = false; 
         });
     },
   },

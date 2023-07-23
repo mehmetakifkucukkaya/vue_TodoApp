@@ -4,7 +4,6 @@
       <span class="task-text">{{ task.text }}</span>
       <span class="icons">
         <i @click="onDelete(task.id)" class="fas fa-trash-alt"></i>
-        <i @click="onUpdate(task.id)" class="fas fa-edit"></i>
       </span>
     </h3>
     <p>
