@@ -28,11 +28,11 @@ export default {
     return {
       loading: true, // Preloader'ın gösterilip gösterilmeyeceğini belirleyen değişken
       tasks: [],
-      APIKey: "65943515998380b98149bdc69a569a8b", //Trello API Key buraya girilmeli
+      APIKey: "", //Trello API Key buraya girilmeli
       APIToken:
-        "ATTAb2ff5ec830d00d723541530a6f6a158a9050c0c9832caaa0cab3988073e6b527593E1979", //Trello token buraya girilmeli
-      idBoard: "64b97f70d4005b477e6fac62", //Trello Board ID'si buraya girilmeli
-      idList: "64ba704b58ec7e4fd9025460", // List 1
+        "", //Trello token buraya girilmeli
+      idBoard: "", //Trello Board ID'si buraya girilmeli
+      idList: "", // Trello'da task eklemek istediğiniz listenin ID'si buraya girilmeli
     };
   },
 
