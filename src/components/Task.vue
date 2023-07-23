@@ -83,11 +83,11 @@ export default {
 }
 
 .task-text {
-  flex: 1; /* Yeni eklenen kısım */
+  flex: 1; 
 }
 
 .icons {
-  display: flex; /* Yeni eklenen kısım */
+  display: flex; 
 }
 
 .task i {
